@@ -5,7 +5,7 @@
  * Date: 16-8-7
  * Time: 下午3:36
  */
-    class pages extends CI_Controller {
+    class Pages extends CI_Controller {
         public function view($page = 'home'){
             if(!file_exists(APPPATH.'/views/pages'.$page.'.php'))
             {
@@ -16,5 +16,8 @@
             $this->load->view('templates/header',$data);
             $this->load->view('pages'.$page,$data);
             $this->load->view('templates/footer',$data);
+        }
+        public function index(){
+            echo 1;
         }
     }

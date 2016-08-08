@@ -74,12 +74,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
+	'dsn'	=> 'mysql:host=localhost;dbname=Jingubang',
 	'hostname' => 'localhost',
 	'username' => 'webadmin',
 	'password' => 'undefined',
-	'database' => 'Jingubang',
-	'dbdriver' => 'mysql',
+	'database' => '',
+	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => TRUE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
