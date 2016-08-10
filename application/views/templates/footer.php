@@ -7,7 +7,9 @@
         </div>
     </div>
 </div>
-<a href="<?php echo site_url('jingubang') ?>">返回主页</a>
+<a href="<?php echo site_url('jingubang'); ?>">返回主页</a>
+<a href="<?php echo site_url('jingubang/register'); ?>">注册用户</a>
+<a href="<?php echo site_url('jingubang/sql'); ?>">开始检测</a>
 <em>&copy;2016</em>
 </body>
 </html>

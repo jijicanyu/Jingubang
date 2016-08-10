@@ -1,10 +1,11 @@
 <h2><?php echo $title; ?></h2>
 <?php echo validation_errors(); ?>
 <?php echo form_open('jingubang/register',$attributes); ?>
-<div style="width:500px;"><label style="width:50px;text-align:right;" for="username">用户名</label>
+<h5>带*为必填</h5>
+<div style="width:500px;"><label style="width:50px;text-align:right;" for="username">*用户名</label>
     <input type="input" name="username" maxlength="20" style="width:150px;"/>
 </div>
-<div style="width:500px;"><label style="width:50px;text-align:right;" for="password">密 码</label>
+<div style="width:500px;"><label style="width:50px;text-align:right;" for="password">*密 码</label>
     <input type="password" name="password" maxlength="32" style="width:150px;"/><br/>
 </div>
 <div style="width:500px;"><label style="width:50px;text-align:right;" for="email">邮 箱</label>

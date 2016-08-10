@@ -12,7 +12,6 @@
         }
         public function register(){
             $this->load->helper('url');
-
             $data = array(
                 'username'=>$this->input->post('username'),
                 'password'=>md5($this->input->post('password')),
@@ -21,10 +20,20 @@
             );
             $query = $this->db->get_where('user',array('username'=>$data['username']));
             if($query->row_array() !== NULL){
-                return 2;
+                $res = 2;
             }
             else{
-                return $this->db->insert('user',$data);
+                $res =$this->db->insert('user',$data);
             }
+            if($res == 1){
+                $data = "注册成功";
+            }
+            elseif($res == 0){
+                $data = "注册失败";
+            }
+            elseif($res == 2){
+                $data = "用户名已存在";
+            }
+            return $data;
         }
     }

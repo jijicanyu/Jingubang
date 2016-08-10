@@ -14,10 +14,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $this->load->helper('url_helper');
         }
         public function index(){
+            $this->load->view('templates/header');
             $this->load->view('welcome_message');
-        }
-        public function new_user(){
-         //   $this->load->;
+            $this->load->view('templates/footer');
         }
         public function history(){
 
@@ -39,23 +38,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             }
             else {
-                $res = $this->show_model->register();
-                if($res == 1){
-                     $data['msg'] = "注册成功";
-                 }
-                elseif($res == 0){
-                     $data['msg'] = "注册失败";
-                 }
-                 elseif($res == 2){
-                     $data['msg'] = "用户名已存在";
-                 }
+                $data['msg'] = $this->show_model->register();
                 $this->load->view('common/message',$data);
             }
         }
         public function sql(){
             $this->load->helper('form');
             $this->load->library('form_validation');
+            $this->load->model('sql_model');
 
             $data['title'] = '金箍棒sql注入检测系统';
+
+            $this->form_validation->set_rules('url','URL','required');
+            $this->form_validation->set_rules('sqlmapapi','SqlmapAPI','required');
+
+            if($this->form_validation->run() === FALSE){
+                $this->load->view('templates/header',$data);
+                $this->load->view('common/sql');
+                $this->load->view('templates/footer');
+            }
+            else{
+                $res = $this->sql_model->sql();
+            }
+
         }
     }
