@@ -1,8 +1,7 @@
 <h2><?php echo $title; ?></h2>
 <?php echo validation_errors(); ?>
 <?php echo form_open('jingubang/sql'); ?>
-<div style="width:500px;"><label style="width:50px;text-align:right;" for="sqlmapapi">API</label>
-    <input type="text" name="sqlmapapi"  style="width:150px;"/>
+<h5>请不要忽略http/https</h5>
 </div>
 <div style="width:500px;"><label style="width:50px;text-align:right;" for="url">URL</label>
     <input type="text" name="url"  style="width:150px;"/><br/>
