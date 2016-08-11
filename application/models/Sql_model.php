@@ -13,6 +13,8 @@ class Sql_model extends CI_Model
     public function __construct()
     {
         $this->load->database();
+        require_once("application/libraries/Requests/library/Requests.php");
+        Requests::register_autoloader();
     }
 
 
@@ -28,13 +30,13 @@ class Sql_model extends CI_Model
         $this->setOptionValue($id,"url",$data['url']);
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
+        $this->saveTask($id);
         $res['api'] = $this->api;
+        $res['url'] = $data['url'];
         return $res;
     }
 
     public function startScan($taskid){
-        require_once("application/libraries/Requests/library/Requests.php");
-        Requests::register_autoloader();
         $scanurl = $this->getOptionValue($taskid,"url");
         $url = $this->api . "/scan/" . $taskid . "/start";
         $headers = array(
@@ -49,16 +51,101 @@ class Sql_model extends CI_Model
         $content = json_encode($content);
         $response = Requests::post($url,$headers,$content,$options);
         $response = json_decode($response->body, true);
+        $user['taskid'] = $taskid;
+        $user['uid'] = $_SESSION['username'];
         if($response['success']){
+            $this->db->insert('history',$user);
             return $response['engineid'];
         }
-        return -1;
+        $this->error();
+    }
+
+    public function saveTask($taskid){
+        $status = $this->isFinish($taskid);
+        if($status == "terminated"){
+            $this->save($taskid);
+        }
+        return $status;
+    }
+
+    private function save($taskid){
+        $data['taskid'] = $taskid;
+        $data['url'] = $this->getOptionValue($taskid,'url');
+        $res = $this->getscan($taskid);
+        $data['isVulnerable'] = $res['isVulnerable'];
+        $data['HttpMethod'] = $res['place'];
+        $data['banner'] = "os:".$res['os'].";dbms:".$res['dbms'];
+        $data['parameter'] = $res['parameter'];
+        $this->db->insert('Jingubang',$data);
+        $log['taskid'] = $taskid;
+        $log['details'] = $res['log'];
+        $this->db->insert('log',$log);
+
+    }
+
+    public function getscan($taskid){
+        $url = $this->api.'/scan/'.$taskid.'/data';
+        $headers = array(
+            'Content-Type' => 'application/json'
+        );
+        $options = array(
+            "timeout" => 60
+        );
+        $response = Requests::get($url,$headers,$options);
+        $response = $response->body;
+        $response = json_decode($response,true);
+        $res['isVulnerable'] = !empty($response['data']);
+        if(!$res['isVulnerable']){
+            return $res;
+        }
+        $response= $response['data'][0]['value'][0];
+        $res['dbms'] = $response['dbms'][0];
+        $res['place'] = $response['place'];
+        $res['os'] = $response['os'];
+        $res['parameter'] = $response['parameter'];
+        $res['data'] = json_encode($response['data']);
+        $res['log'] = $this->getlog($taskid);
+        return $res;
+    }
+
+    private function getlog($taskid){
+        $url = $this->api.'/scan/'.$taskid.'/log';
+        $headers = array(
+            'Content-Type' => 'application/json'
+        );
+        $options = array(
+            "timeout" => 60
+        );
+        $response = Requests::get($url,$headers,$options);
+        $response = $response->body;
+        return $response;
+    }
+
+    private function isFinish($taskid){
+        $url = $this->api.'/scan/'.$taskid.'/status';
+        $headers = array(
+            'Content-Type' => 'application/json'
+        );
+        $options = array(
+            "timeout" => 60
+        );
+        $response = Requests::get($url,$headers,$options);
+        $response = json_decode($response->body,true);
+        if($response['success']){
+            return $response['status'];
+        }
+        else{
+            $this->error();
+        }
+    }
+
+    public function error($msg=""){
+        $msg = "出现未知错误:".$msg." at:".date('y-m-d h:i:s',time()).PHP_EOL;
+        file_put_contents("error.log",$msg,FILE_APPEND);
     }
 
     public function getOptionValue($taskid, $opkey)
     {
-        require_once("application/libraries/Requests/library/Requests.php");
-        Requests::register_autoloader();
         $opkey = trim($opkey);
         $url = $this->api . "/option/" . $taskid . "/get";
         $headers = array(
@@ -82,8 +169,6 @@ class Sql_model extends CI_Model
     }
 
     public function setOptionValue($taskid,$opkey,$opvalue){
-        require_once("application/libraries/Requests/library/Requests.php");
-        Requests::register_autoloader();
         $opkey = trim($opkey);
         $opvalue = trim($opvalue);
         $url = $this->api . "/option/" . $taskid . "/set";
@@ -140,5 +225,3 @@ class Sql_model extends CI_Model
     }
 
 }
-
-// get taskid http://192.168.1.173:8775/task/new

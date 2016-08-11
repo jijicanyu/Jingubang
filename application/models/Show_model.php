@@ -36,4 +36,28 @@
             }
             return $data;
         }
+        public function login(){
+            $this->load->helper('url');
+            $data = array(
+                'username'=>$this->input->post('username'),
+                'password'=>md5($this->input->post('password'))
+            );
+            $query = $this->db->get_where('user',array('username'=>$data['username'],'password'=>$data['password']));
+            if($query->row_array()!=NULL){
+                $_SESSION['username'] = $data['username'];
+                $res['msg'] = "登陆成功";
+            }
+            else{
+                $_SESSION['username'] = null;
+                $res['msg'] = "登陆失败";
+                $res['url'] = site_url('jingubang/login');
+                return $res;
+            }
+            $res['url'] = site_url('jingubang/user');
+            return $res;
+        }
+        public function gethistory(){
+            $uid = $_SESSION['username'];
+
+        }
     }
