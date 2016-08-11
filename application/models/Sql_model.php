@@ -52,7 +52,7 @@ class Sql_model extends CI_Model
         $response = Requests::post($url,$headers,$content,$options);
         $response = json_decode($response->body, true);
         $user['taskid'] = $taskid;
-        $user['uid'] = $_SESSION['username'];
+        $user['username'] = $_SESSION['username'];
         if($response['success']){
             $this->db->insert('history',$user);
             return $response['engineid'];

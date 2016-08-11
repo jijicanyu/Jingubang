@@ -1,4 +1,5 @@
-<label>开始检测</label>
+<hr>
+<label>检测历史</label>
 <?php foreach($history as $tasks): ?>
     <?php foreach($tasks as $task): ?>
         <div style="margin-left: 300px">
@@ -15,3 +16,5 @@ id: <h3><?php echo $task['id'];?></h3>
         </div>
     <?php endforeach;?>
 <?php endforeach;?>
+<hr>
+
