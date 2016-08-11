@@ -27,7 +27,7 @@ class Sql_model extends CI_Model
         $data['url'] = $this->checkurl($data['url']);
         $json = $this->getNewTaskid();
         $id = $json['taskid'];
-        $this->setOptionValue($id,"url",$data['url']);
+        $this->setOptionValue($id, "url", $data['url']);
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
         $this->saveTask($id);
@@ -36,8 +36,9 @@ class Sql_model extends CI_Model
         return $res;
     }
 
-    public function startScan($taskid){
-        $scanurl = $this->getOptionValue($taskid,"url");
+    public function startScan($taskid)
+    {
+        $scanurl = $this->getOptionValue($taskid, "url");
         $url = $this->api . "/scan/" . $taskid . "/start";
         $headers = array(
             'Content-Type' => 'application/json'
@@ -49,56 +50,70 @@ class Sql_model extends CI_Model
             "timeout" => 60
         );
         $content = json_encode($content);
-        $response = Requests::post($url,$headers,$content,$options);
+        $response = Requests::post($url, $headers, $content, $options);
         $response = json_decode($response->body, true);
         $user['taskid'] = $taskid;
         $user['username'] = $_SESSION['username'];
-        if($response['success']){
-            $this->db->insert('history',$user);
+        if ($response['success']) {
+            $this->db->insert('history', $user);
             return $response['engineid'];
         }
         $this->error();
     }
 
-    public function saveTask($taskid){
+    public function saveTask($taskid)
+    {
         $status = $this->isFinish($taskid);
-        if($status == "terminated"){
-            $this->save($taskid);
+        while ($status != "terminated") {
+            if ($status == "terminated") {
+                break;
+            }
+            sleep(3);
+            $status = $this->isFinish($taskid);
         }
-        return $status;
+        $this->save($taskid);
     }
 
-    private function save($taskid){
+    public function delTask($taskid){
+        $this->db->where('taskid',$taskid);
+        $data = $this->db->delete('history');
+        return $data;
+    }
+
+    public function save($taskid)
+    {
         $data['taskid'] = $taskid;
-        $data['url'] = $this->getOptionValue($taskid,'url');
+        $data['url'] = $this->getOptionValue($taskid, 'url');
         $res = $this->getscan($taskid);
         $data['isVulnerable'] = $res['isVulnerable'];
         $data['HttpMethod'] = $res['place'];
-        $data['banner'] = "os:".$res['os'].";dbms:".$res['dbms'];
+        $data['banner'] = "os:" . $res['os'] . ";dbms:" . $res['dbms'];
         $data['parameter'] = $res['parameter'];
-        $this->db->insert('Jingubang',$data);
+        $this->db->insert('Jingubang', $data);
         $log['taskid'] = $taskid;
         $log['details'] = $res['log'];
-        $this->db->insert('log',$log);
+        $this->db->insert('log', $log);
+        return 1;
 
     }
 
-    public function getscan($taskid){
-        $url = $this->api.'/scan/'.$taskid.'/data';
+    private function getscan($taskid)
+    {
+        $url = $this->api . '/scan/' . $taskid . '/data';
         $headers = array(
             'Content-Type' => 'application/json'
         );
         $options = array(
             "timeout" => 60
         );
-        $response = Requests::get($url,$headers,$options);
+        $response = Requests::get($url, $headers, $options);
         $response = $response->body;
-        $response = json_decode($response,true);
+        $response = json_decode($response, true);
         $res['isVulnerable'] = !empty($response['data']);
-        if(!$res['isVulnerable']){
+        if (!$res['isVulnerable']) {
             return $res;
         }
-        $response= $response['data'][0]['value'][0];
+        $response = $response['data'][0]['value'][0];
         $res['dbms'] = $response['dbms'][0];
         $res['place'] = $response['place'];
         $res['os'] = $response['os'];
@@ -108,40 +123,42 @@ class Sql_model extends CI_Model
         return $res;
     }
 
-    private function getlog($taskid){
-        $url = $this->api.'/scan/'.$taskid.'/log';
+    private function getlog($taskid)
+    {
+        $url = $this->api . '/scan/' . $taskid . '/log';
         $headers = array(
             'Content-Type' => 'application/json'
         );
         $options = array(
             "timeout" => 60
         );
-        $response = Requests::get($url,$headers,$options);
+        $response = Requests::get($url, $headers, $options);
         $response = $response->body;
         return $response;
     }
 
-    private function isFinish($taskid){
-        $url = $this->api.'/scan/'.$taskid.'/status';
+    private function isFinish($taskid)
+    {
+        $url = $this->api . '/scan/' . $taskid . '/status';
         $headers = array(
             'Content-Type' => 'application/json'
         );
         $options = array(
             "timeout" => 60
         );
-        $response = Requests::get($url,$headers,$options);
-        $response = json_decode($response->body,true);
-        if($response['success']){
+        $response = Requests::get($url, $headers, $options);
+        $response = json_decode($response->body, true);
+        if ($response['success']) {
             return $response['status'];
-        }
-        else{
+        } else {
             $this->error();
         }
     }
 
-    public function error($msg=""){
-        $msg = "出现未知错误:".$msg." at:".date('y-m-d h:i:s',time()).PHP_EOL;
-        file_put_contents("error.log",$msg,FILE_APPEND);
+    public function error($msg = "")
+    {
+        $msg = "出现未知错误:" . $msg . " at:" . date('y-m-d h:i:s', time()) . PHP_EOL;
+        file_put_contents("error.log", $msg, FILE_APPEND);
     }
 
     public function getOptionValue($taskid, $opkey)
@@ -168,7 +185,8 @@ class Sql_model extends CI_Model
 
     }
 
-    public function setOptionValue($taskid,$opkey,$opvalue){
+    public function setOptionValue($taskid, $opkey, $opvalue)
+    {
         $opkey = trim($opkey);
         $opvalue = trim($opvalue);
         $url = $this->api . "/option/" . $taskid . "/set";

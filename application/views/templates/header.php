@@ -4,6 +4,12 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+        function delTask(taskid) {
+            url = "<?php echo site_url('jingubang/delete');?>"+"/";
+            $.get(url+taskid);
+        }
+    </script>
 </head>
 <body>
 <div class="container">

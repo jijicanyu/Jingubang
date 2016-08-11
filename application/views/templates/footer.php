@@ -11,7 +11,6 @@
 <a href="<?php echo site_url('jingubang/register'); ?>">注册用户</a>
 <a href="<?php echo site_url('jingubang/login'); ?>">用户登陆</a>
 <a href="<?php echo site_url('jingubang/logout'); ?>">退出登陆</a>
-<a href="<?php echo site_url('jingubang/sql'); ?>">开始检测</a>
 <em>&copy;2016</em>
 </body>
 </html>

@@ -24,10 +24,6 @@ class Jingubang extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function history()
-    {
-
-    }
 
     public function register()
     {
@@ -40,7 +36,6 @@ class Jingubang extends CI_Controller
         $this->form_validation->set_rules('password', 'Password', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $data['attributes'] = array('style' => '');
             $this->load->view('templates/header', $data);
             $this->load->view('user/register', $data);
             $this->load->view('templates/footer');
@@ -51,29 +46,6 @@ class Jingubang extends CI_Controller
         }
     }
 
-    public function sql()
-    {
-        $this->load->helper('form');
-        $this->load->library('form_validation');
-        $this->load->model('sql_model');
-
-        $data['title'] = '金箍棒sql注入检测系统';
-
-        $this->form_validation->set_rules('url', 'URL', 'required');
-
-        if ($this->form_validation->run() === FALSE) {
-            $this->load->view('templates/header', $data);
-            $this->load->view('common/sql');
-            $this->load->view('templates/footer');
-        } else {
-            $res = $this->sql_model->sql();
-
-            $this->load->view('templates/header', $res);
-            $this->load->view('user/myhistory', $res);
-            $this->load->view('templates/footer');
-        }
-
-    }
 
     public function login()
     {
@@ -85,6 +57,10 @@ class Jingubang extends CI_Controller
 
         $this->form_validation->set_rules("username", "Username", "required");
         $this->form_validation->set_rules("password", "Password", "required");
+
+        if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
+            $this->user();
+        }
 
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('templates/header', $data);
@@ -104,31 +80,37 @@ class Jingubang extends CI_Controller
 
         $data['title'] = '金箍棒sql注入检测系统';
         $this->form_validation->set_rules('url', 'URL', 'required');
-        if ($this->form_validation->run() === FALSE) {
-            $this->load->view('templates/header', $data);
-            $this->load->view('common/sql');
-        } else {
-            $res = $this->sql_model->sql();
-
-            $this->load->view('templates/header', $res);
-            $this->load->view('user/myhistory', $res);
-            $this->load->view('templates/footer');
-        }
 
         if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
+            if ($this->form_validation->run() === FALSE) {
+                $this->load->view('templates/header', $data);
+                $this->load->view('common/sql');
+            } else {
+                $res = $this->sql_model->sql();
+
+                $this->load->view('templates/header', $res);
+                $this->load->view('user/myhistory', $res);
+                $this->load->view('templates/footer');
+            }
             $res['history'] = $this->show_model->gethistory();
             $this->load->view('user/user', $res);
             $this->load->view('templates/footer');
         } else {
             $data['msg'] = "验证失败";
             $data['url'] = site_url("jingubang/login");
-            $this->load->view("user/location",$data);
+            $this->load->view("user/location", $data);
         }
     }
 
     public function logout()
     {
         $_SESSION['username'] = NULL;
-        var_dump($_SESSION['username']);
+        $this->login();
+    }
+
+    public function delete($taskid)
+    {
+        $this->load->model('sql_model');
+        $this->sql_model->delTask($taskid);
     }
 }

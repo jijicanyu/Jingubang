@@ -1,6 +1,6 @@
 <h2><?php echo $title; ?></h2>
 <?php echo validation_errors(); ?>
-<?php echo form_open('jingubang/register',$attributes); ?>
+<?php echo form_open('jingubang/register'); ?>
 <h5>带*为必填</h5>
 <div style="width:500px;"><label style="width:50px;text-align:right;" for="username">*用户名</label>
     <input type="input" name="username" maxlength="20" style="width:150px;"/>
