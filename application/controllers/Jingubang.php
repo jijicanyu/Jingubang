@@ -65,7 +65,6 @@ class Jingubang extends CI_Controller
             $this->load->view('templates/header', $data);
             $this->load->view('common/sql');
             $this->load->view('templates/footer');
-            $this->sql_model->saveTask("015b69afb83e9bcf");
         } else {
             $res = $this->sql_model->sql();
 
@@ -99,11 +98,29 @@ class Jingubang extends CI_Controller
 
     public function user()
     {
-        if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
-            $res = $this->show_model->gethistory();
-            $this->load->view('user/user', $res);
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->load->model('sql_model');
+
+        $data['title'] = '金箍棒sql注入检测系统';
+        $this->form_validation->set_rules('url', 'URL', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('common/sql');
         } else {
-            $data['msg'] = "登陆失败";
+            $res = $this->sql_model->sql();
+
+            $this->load->view('templates/header', $res);
+            $this->load->view('user/myhistory', $res);
+            $this->load->view('templates/footer');
+        }
+
+        if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
+            $res['history'] = $this->show_model->gethistory();
+            $this->load->view('user/user', $res);
+            $this->load->view('templates/footer');
+        } else {
+            $data['msg'] = "验证失败";
             $data['url'] = site_url("jingubang/login");
             $this->load->view("user/location",$data);
         }

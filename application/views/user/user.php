@@ -1,7 +1,17 @@
-<?php foreach($news as $news_item): ?>
-    标题: <h3><?php echo $news_item['title']; ?></h3>
-    <div class="main">
-        内容: <?php echo $news_item['text'];?>
-    </div>
-    <p><a href="<?php echo site_url('../?/news/'.$news_item['slug']); ?>">View article</a></p>
+<label>开始检测</label>
+<?php foreach($history as $tasks): ?>
+    <?php foreach($tasks as $task): ?>
+        <div style="margin-left: 300px">
+id: <h3><?php echo $task['id'];?></h3>
+        <div>
+            <p>url:<?php echo $task['url'];?></p>
+            <p>taskid:<?php echo $task['taskid'];?></p>
+            <p>isVulnerable:<?php echo $task['isVulnerable'];?></p>
+            <p>HttpMethod:<?php echo $task['HttpMethod'];?></p>
+            <p>banner:<?php echo $task['banner'];?></p>
+            <p>parameter:<?php echo $task['parameter'];?></p>
+            <br>
+        </div>
+        </div>
+    <?php endforeach;?>
 <?php endforeach;?>

@@ -57,7 +57,24 @@
             return $res;
         }
         public function gethistory(){
-            $uid = $_SESSION['username'];
-
+            if(isset($_SESSION['username'])&&!empty($_SESSION['username'])){
+                $username = $_SESSION['username'];
+            }
+            else{
+                exit;
+            }
+            $task = $this->db->get_where('history',array('username'=>$username));
+            $task = $task->result_array();
+            $tasks = array();
+            foreach ($task as $tmp){
+                $tasks[] = $tmp['taskid'];
+            }
+            $history = array();
+            foreach ($task as $tmp){
+                $tmp = $this->db->get_where('Jingubang',array('taskid'=>$tmp['taskid']));
+                $tmp = $tmp->result_array();
+                $history[] = $tmp;
+            }
+            return $history;
         }
     }
