@@ -12,7 +12,7 @@ id: <h3><?php echo $task['id'];?></h3>
             <p>banner:<?php echo $task['banner'];?></p>
             <p>parameter:<?php echo $task['parameter'];?></p>
             <a href="<?php echo site_url('/jingubang/delete/'.$task['taskid']);?>">删除此记录</a>
-            <input type="button" onclick="delTask(`<?php echo $task['taskid']?>`)" value="test">
+            <input type="button" onclick="getLog(`<?php echo $task['taskid']?>`)" value="详细日志">
             <br>
         </div>
         </div>
@@ -20,3 +20,23 @@ id: <h3><?php echo $task['id'];?></h3>
 <?php endforeach;?>
 <hr>
 
+<script>
+    function getLog(taskid) {
+        var url = "<?php echo site_url('jingubang/log');?>";
+        var data = taskid;
+        $.ajax({
+            type:"POST",
+            url:url,
+            data:{"taskid":data},
+            dataType:"text",
+            async:false,
+            success:function (log) {
+                document.write(log);
+            },
+            error:function () {
+                alert('something wrong');
+            }
+            }
+        )
+    }
+</script>

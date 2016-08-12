@@ -86,9 +86,12 @@ class Sql_model extends CI_Model
         $data['url'] = $this->getOptionValue($taskid, 'url');
         $res = $this->getscan($taskid);
         $data['isVulnerable'] = $res['isVulnerable'];
-        $data['HttpMethod'] = $res['place'];
-        $data['banner'] = "os:" . $res['os'] . ";dbms:" . $res['dbms'];
-        $data['parameter'] = $res['parameter'];
+        if($data['isVulnerable']==1){
+            $data['HttpMethod'] = $res['place'];
+            $data['banner'] = "os:" . $res['os'] . ";dbms:" . $res['dbms'];
+            $data['parameter'] = $res['parameter'];
+            $data['data'] = $res['data'];
+        }
         $this->db->insert('Jingubang', $data);
         $log['taskid'] = $taskid;
         $log['details'] = $res['log'];
@@ -111,6 +114,7 @@ class Sql_model extends CI_Model
         $response = json_decode($response, true);
         $res['isVulnerable'] = !empty($response['data']);
         if (!$res['isVulnerable']) {
+            $res['log'] = $this->getlog($taskid);
             return $res;
         }
         $response = $response['data'][0]['value'][0];
@@ -135,6 +139,14 @@ class Sql_model extends CI_Model
         $response = Requests::get($url, $headers, $options);
         $response = $response->body;
         return $response;
+    }
+
+    public function logToWeb($taskid){
+
+        $query = $this->db->get_where('log',array('taskid'=>$taskid));
+        $result = $query->row_array();
+        return $result;
+
     }
 
     private function isFinish($taskid)

@@ -60,6 +60,7 @@ class Jingubang extends CI_Controller
 
         if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
             $this->user();
+            return 0;
         }
 
         if ($this->form_validation->run() === FALSE) {
@@ -100,6 +101,24 @@ class Jingubang extends CI_Controller
             $data['url'] = site_url("jingubang/login");
             $this->load->view("user/location", $data);
         }
+    }
+
+    public function log(){
+        $this->load->model('sql_model');
+        if(!empty($_POST['taskid'])){
+            $taskid = $_POST['taskid'];
+            $log = $this->sql_model->logToWeb($taskid);
+            $log = json_encode($log);
+            echo $log;
+        }
+        else{
+            show_404();
+        }
+    }
+
+    public function sql(){
+        $this->load->model('sql_model');
+
     }
 
     public function logout()
