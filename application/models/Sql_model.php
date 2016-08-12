@@ -18,7 +18,7 @@ class Sql_model extends CI_Model
     }
 
 
-    public function sql()
+/*    public function sql()
     {
         $this->load->helper('url');
         $data = array(
@@ -33,6 +33,18 @@ class Sql_model extends CI_Model
         $this->saveTask($id);
         $res['api'] = $this->api;
         $res['url'] = $data['url'];
+        return $res;
+    }*/
+
+    public function sql($url){
+        $url = $this->checkurl($url);
+        $id = $this->getNewTaskid();
+        $id = $id['taskid'];
+        $this->setOptionValue($id,"url",$url);
+        $res['engineid'] = $this->startScan($id);
+        $res['taskid'] = $id;
+        $this->saveTask($id);
+        $res['url'] = $url;
         return $res;
     }
 
@@ -141,12 +153,20 @@ class Sql_model extends CI_Model
         return $response;
     }
 
+
+
     public function logToWeb($taskid){
 
         $query = $this->db->get_where('log',array('taskid'=>$taskid));
         $result = $query->row_array();
         return $result;
 
+    }
+
+    public function payloadsToWeb($taskid){
+        $query = $this->db->get_where('Jingubang',array('taskid'=>$taskid));
+        $result = $query->row_array();
+        return $result;
     }
 
     private function isFinish($taskid)

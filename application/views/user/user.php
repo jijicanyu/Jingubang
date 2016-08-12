@@ -12,6 +12,7 @@ id: <h3><?php echo $task['id'];?></h3>
             <p>banner:<?php echo $task['banner'];?></p>
             <p>parameter:<?php echo $task['parameter'];?></p>
             <a href="<?php echo site_url('/jingubang/delete/'.$task['taskid']);?>">删除此记录</a>
+            <input type="button" onclick="getPayLoads(`<?php echo $task['taskid']?>`)" value="Payloads">
             <input type="button" onclick="getLog(`<?php echo $task['taskid']?>`)" value="详细日志">
             <br>
         </div>
@@ -34,9 +35,29 @@ id: <h3><?php echo $task['id'];?></h3>
                 document.write(log);
             },
             error:function () {
-                alert('something wrong');
+                alert('something wrong error 001');
             }
             }
-        )
+        );
+    }
+</script>
+<script>
+    function getPayLoads(taskid) {
+        var url = "<?php echo site_url('jingubang/getPayloads');?>";
+        var data = taskid;
+        $.ajax({
+            type:"POST",
+            url:url,
+            data:{"taskid":data},
+            dataType:"text",
+            async:false,
+            success:function (payloads) {
+                document.write(payloads);
+            },
+            error:function () {
+                alert('something wrong error 002');
+            }
+        });
+
     }
 </script>
