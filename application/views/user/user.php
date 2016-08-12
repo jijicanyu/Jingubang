@@ -19,45 +19,6 @@ id: <h3><?php echo $task['id'];?></h3>
         </div>
     <?php endforeach;?>
 <?php endforeach;?>
+<p style="display: none" id="webUrl"><?php echo site_url();?></p>
+
 <hr>
-
-<script>
-    function getLog(taskid) {
-        var url = "<?php echo site_url('jingubang/log');?>";
-        var data = taskid;
-        $.ajax({
-            type:"POST",
-            url:url,
-            data:{"taskid":data},
-            dataType:"text",
-            async:false,
-            success:function (log) {
-                document.write(log);
-            },
-            error:function () {
-                alert('something wrong error 001');
-            }
-            }
-        );
-    }
-</script>
-<script>
-    function getPayLoads(taskid) {
-        var url = "<?php echo site_url('jingubang/getPayloads');?>";
-        var data = taskid;
-        $.ajax({
-            type:"POST",
-            url:url,
-            data:{"taskid":data},
-            dataType:"text",
-            async:false,
-            success:function (payloads) {
-                document.write(payloads);
-            },
-            error:function () {
-                alert('something wrong error 002');
-            }
-        });
-
-    }
-</script>

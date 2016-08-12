@@ -83,6 +83,7 @@ class Jingubang extends CI_Controller
             $res['history'] = $this->show_model->gethistory();
             $this->load->view('templates/header', $data);
             $this->load->view('common/sql');
+            $this->load->view('common/options');
             $this->load->view('user/user', $res);
             $this->load->view('templates/footer');
         } else {
@@ -118,13 +119,21 @@ class Jingubang extends CI_Controller
         }
     }
 
+    public function options(){
+        $data['title'] = '金箍棒sql注入检测系统';
+        $this->load->model('sql_model');
+        $this->load->view('templates/header',$data);
+        $this->load->view('common/sql');
+        $this->load->view('templates/footer');
+    }
+
     public function sql()
     {
         $this->load->model('sql_model');
         if (!empty($_POST['url'])) {
             $url = $_POST['url'];
-            $result = $this->sql_model->sql($url);
-            var_dump($result);
+            $json = $_POST['parameters'];
+            $result = $this->sql_model->sql($url,$json);
 
         } else {
             show_404();

@@ -12,12 +12,13 @@
 <script>
     $(document).ready(function () {
         $("#subbtn").click(function () {
+            optionArr = sql();
             var sqlurl = $("#sqlurl").val();
             var url = "<?php echo site_url('jingubang/sql')?>";
             $.ajax({
                 type:"POST",
                 url:url,
-                data:{"url":sqlurl},
+                data:{"url":sqlurl,"parameters":optionArr},
                 dataType:"text",
                 async:true,
                 success:function (msg) {

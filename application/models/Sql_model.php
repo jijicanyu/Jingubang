@@ -36,16 +36,24 @@ class Sql_model extends CI_Model
         return $res;
     }*/
 
-    public function sql($url){
+    public function sql($url,$json){
         $url = $this->checkurl($url);
         $id = $this->getNewTaskid();
         $id = $id['taskid'];
         $this->setOptionValue($id,"url",$url);
+        $this->setOptions($json,$id);
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
         $this->saveTask($id);
         $res['url'] = $url;
         return $res;
+    }
+
+    private function setOptions($json,$id){
+        $json = json_decode($json,true);
+        foreach ($json as $key => $value){
+            $this->setOptionValue($id,$key,$value);
+        };
     }
 
     public function startScan($taskid)
