@@ -12,7 +12,6 @@
         }
         public function register(){
             $this->load->helper('url');
-
             $data = array(
                 'username'=>$this->input->post('username'),
                 'password'=>md5($this->input->post('password')),
@@ -21,10 +20,61 @@
             );
             $query = $this->db->get_where('user',array('username'=>$data['username']));
             if($query->row_array() !== NULL){
-                return 2;
+                $res = 2;
             }
             else{
-                return $this->db->insert('user',$data);
+                $res =$this->db->insert('user',$data);
             }
+            if($res == 1){
+                $data = "注册成功";
+            }
+            elseif($res == 0){
+                $data = "注册失败";
+            }
+            elseif($res == 2){
+                $data = "用户名已存在";
+            }
+            return $data;
+        }
+        public function login(){
+            $this->load->helper('url');
+            $data = array(
+                'username'=>$this->input->post('username'),
+                'password'=>md5($this->input->post('password'))
+            );
+            $query = $this->db->get_where('user',array('username'=>$data['username'],'password'=>$data['password']));
+            if($query->row_array()!=NULL){
+                $_SESSION['username'] = $data['username'];
+                $res['msg'] = "登陆成功";
+            }
+            else{
+                $_SESSION['username'] = null;
+                $res['msg'] = "登陆失败";
+                $res['url'] = site_url('jingubang/login');
+                return $res;
+            }
+            $res['url'] = site_url('jingubang/user');
+            return $res;
+        }
+        public function gethistory(){
+            if(isset($_SESSION['username'])&&!empty($_SESSION['username'])){
+                $username = $_SESSION['username'];
+            }
+            else{
+                exit;
+            }
+            $task = $this->db->get_where('history',array('username'=>$username));
+            $task = $task->result_array();
+            $tasks = array();
+            foreach ($task as $tmp){
+                $tasks[] = $tmp['taskid'];
+            }
+            $history = array();
+            foreach ($task as $tmp){
+                $tmp = $this->db->get_where('Jingubang',array('taskid'=>$tmp['taskid']));
+                $tmp = $tmp->result_array();
+                $history[] = $tmp;
+            }
+            return $history;
         }
     }
