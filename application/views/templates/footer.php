@@ -12,5 +12,6 @@
 <a href="<?php echo site_url('jingubang/login'); ?>">用户登陆</a>
 <a href="<?php echo site_url('jingubang/logout'); ?>">退出登陆</a>
 <em>&copy;2016</em>
+
 </body>
 </html>

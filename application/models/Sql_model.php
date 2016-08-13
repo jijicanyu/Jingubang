@@ -23,8 +23,12 @@ class Sql_model extends CI_Model
         $url = $this->checkurl($url);
         $id = $this->getNewTaskid();
         $id = $id['taskid'];
+
         $this->setOptionValue($id,"url",$url);
         $this->setOptions($json,$id);
+        //返回响应
+/*        echo 'ok';
+        fastcgi_finish_request();*/
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
         $this->saveTask($id);

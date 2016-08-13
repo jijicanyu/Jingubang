@@ -7,6 +7,7 @@
 <div style="width:500px;">
     <input  type="submit" name="submit" id="subbtn" value="开始检测"/>
     <br/>
+    <input type="button" class="addhobby" value="增加喜好">
 </div>
 </form>
 <script>

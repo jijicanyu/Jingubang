@@ -63,7 +63,8 @@
             else{
                 exit;
             }
-            $task = $this->db->get_where('history',array('username'=>$username));
+            //$task = $this->db->get_where('history',array('username'=>$username));
+            $task = $this->db->query('select * from history where username = '.$this->db->escape($username).' order by id desc');
             $task = $task->result_array();
             $tasks = array();
             foreach ($task as $tmp){

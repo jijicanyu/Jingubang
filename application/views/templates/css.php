@@ -1,0 +1,31 @@
+#mask{
+background:#000;
+opacity:0.75;
+filter:alpha(opacity=75);
+width:100%;
+position:absolute;
+left:0;
+top:0;
+z-index:1000;
+}
+.message{
+    background:#FFFFFF;
+    position:fixed;
+    left:30%;
+    top:30%;
+    z-index:1001;
+    overflow-y:auto;
+}
+.close{
+    color:red;
+    right:5px;
+    top:3px;
+}
+.key{
+    width:541px;
+    height:400px;
+}
+.addhobby{
+    border:none;
+    background:gold;
+}

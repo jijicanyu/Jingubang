@@ -127,12 +127,20 @@ class Jingubang extends CI_Controller
         $this->load->view('templates/footer');
     }
 
+    public function js(){
+        $this->load->view('templates/js');
+    }
+
+    public function css(){
+        $this->load->view('templates/css');
+    }
     public function sql()
     {
         $this->load->model('sql_model');
         if (!empty($_POST['url'])) {
             $url = $_POST['url'];
             $json = $_POST['parameters'];
+
             $result = $this->sql_model->sql($url,$json);
 
         } else {
@@ -146,9 +154,17 @@ class Jingubang extends CI_Controller
         $this->login();
     }
 
-    public function delete($taskid)
+    public function delete()
     {
-        $this->load->model('sql_model');
-        $this->sql_model->delTask($taskid);
+        if(!empty($_POST['taskid'])){
+            $taskid = $_POST['taskid'];
+            $this->load->model('sql_model');
+            $this->sql_model->delTask($taskid);
+            echo 'ok';
+        }
+        else{
+            show_404();
+        }
+
     }
 }
