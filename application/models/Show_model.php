@@ -45,6 +45,7 @@
             $query = $this->db->get_where('user',array('username'=>$data['username'],'password'=>$data['password']));
             if($query->row_array()!=NULL){
                 $_SESSION['username'] = $data['username'];
+
                 $res['msg'] = "登陆成功";
             }
             else{

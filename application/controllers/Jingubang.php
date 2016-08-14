@@ -165,9 +165,16 @@ class Jingubang extends CI_Controller
         if (!empty($_POST['url'])) {
             $url = $_POST['url'];
             $json = $_POST['parameters'];
-
+            ob_start();
+// do initial processing here
+            echo 'ok'; // send the response
+            header('Connection: close');
+            header('Content-Length: '.ob_get_length());
+            ob_end_flush();
+            ob_flush();
+            flush();
             $result = $this->sql_model->sql($url,$json);
-
+            return 0;
         } else {
             show_404();
         }

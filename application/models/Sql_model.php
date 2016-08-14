@@ -29,6 +29,7 @@ class Sql_model extends CI_Model
         //返回响应
         /*        echo 'ok';
                 fastcgi_finish_request();*/
+        session_write_close();
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
         $this->saveTask($id);
