@@ -25,7 +25,28 @@ z-index:1000;
     width:541px;
     height:400px;
 }
-.addhobby{
+.addhobbytip{
     border:none;
     background:gold;
+}
+.addhobby{
+background:url(http://image.tupian114.com/20140418/09380166.png) no-repeat;
+width:36px;
+height:37px;
+cursor:pointer;
+position:absolute;
+background-size:70% 70%;
+left:73px;
+top:202px;
+border: none;
+text-indent:-999em;
+}
+
+.addwindow{
+background:#FFFFFF;
+position:fixed;
+left:30%;
+top:30%;
+z-index:1001;
+overflow-y:auto;
 }

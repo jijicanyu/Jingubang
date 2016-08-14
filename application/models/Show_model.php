@@ -78,4 +78,21 @@
             }
             return $history;
         }
+
+        public function addhobby($hobby){
+            $this->db->insert('hobby',$hobby);
+        }
+
+        public function gethobby(){
+            $username = $_SESSION['username'];
+            $query = $this->db->get_where('hobby',array('username'=>$username));
+            $res = $query->result_array();
+            return $res;
+        }
+
+        public function delhobby($name){
+            $username = $_SESSION['username'];
+            $this->db->where(array('username'=>$username,'name'=>$name));
+            $this->db->delete('hobby');
+        }
     }
