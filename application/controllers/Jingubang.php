@@ -76,13 +76,15 @@ class Jingubang extends CI_Controller
     public function user()
     {
         $this->load->model('sql_model');
+        $this->load->model('show_model');
 
         $data['title'] = '金箍棒sql注入检测系统';
 
         if (isset($_SESSION['username']) && (!empty($_SESSION['username']))) {
             $res['history'] = $this->show_model->gethistory();
+            $res['hobbys'] = $this->show_model->gethobby();
             $this->load->view('templates/header', $data);
-            $this->load->view('common/sql');
+            $this->load->view('common/sql',$res);
             $this->load->view('common/options');
             $this->load->view('user/user', $res);
             $this->load->view('templates/footer');
@@ -90,6 +92,29 @@ class Jingubang extends CI_Controller
             $data['msg'] = "验证失败";
             $data['url'] = site_url("jingubang/login");
             $this->load->view("user/location", $data);
+        }
+    }
+
+    public function addhobby(){
+        $this->load->model('show_model');
+        if(!empty($_POST['hobby'])&&!empty($_POST['name'])){
+            $hobby['username'] = $_SESSION['username'];
+            $hobby['name'] = $_POST['name'];
+            $hobby['json'] = $_POST['hobby'];
+            $this->show_model->addhobby($hobby);
+            echo 'ok';
+        }
+        else{
+            show_404();
+        }
+    }
+
+    public function delhobby(){
+        $this->load->model('show_model');
+        if(!empty($_POST['name'])){
+            $name = $_POST['name'];
+            $this->show_model->delhobby($name);
+            echo 'ok';
         }
     }
 
@@ -127,12 +152,20 @@ class Jingubang extends CI_Controller
         $this->load->view('templates/footer');
     }
 
+    public function js(){
+        $this->load->view('templates/js');
+    }
+
+    public function css(){
+        $this->load->view('templates/css');
+    }
     public function sql()
     {
         $this->load->model('sql_model');
         if (!empty($_POST['url'])) {
             $url = $_POST['url'];
             $json = $_POST['parameters'];
+
             $result = $this->sql_model->sql($url,$json);
 
         } else {
@@ -146,9 +179,17 @@ class Jingubang extends CI_Controller
         $this->login();
     }
 
-    public function delete($taskid)
+    public function delete()
     {
-        $this->load->model('sql_model');
-        $this->sql_model->delTask($taskid);
+        if(!empty($_POST['taskid'])){
+            $taskid = $_POST['taskid'];
+            $this->load->model('sql_model');
+            $this->sql_model->delTask($taskid);
+            echo 'ok';
+        }
+        else{
+            show_404();
+        }
+
     }
 }

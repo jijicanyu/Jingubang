@@ -63,7 +63,8 @@
             else{
                 exit;
             }
-            $task = $this->db->get_where('history',array('username'=>$username));
+            //$task = $this->db->get_where('history',array('username'=>$username));
+            $task = $this->db->query('select * from history where username = '.$this->db->escape($username).' order by id desc');
             $task = $task->result_array();
             $tasks = array();
             foreach ($task as $tmp){
@@ -76,5 +77,22 @@
                 $history[] = $tmp;
             }
             return $history;
+        }
+
+        public function addhobby($hobby){
+            $this->db->insert('hobby',$hobby);
+        }
+
+        public function gethobby(){
+            $username = $_SESSION['username'];
+            $query = $this->db->get_where('hobby',array('username'=>$username));
+            $res = $query->result_array();
+            return $res;
+        }
+
+        public function delhobby($name){
+            $username = $_SESSION['username'];
+            $this->db->where(array('username'=>$username,'name'=>$name));
+            $this->db->delete('hobby');
         }
     }

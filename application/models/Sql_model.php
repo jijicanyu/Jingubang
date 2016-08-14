@@ -18,13 +18,17 @@ class Sql_model extends CI_Model
     }
 
 
-
-    public function sql($url,$json){
+    public function sql($url, $json)
+    {
         $url = $this->checkurl($url);
         $id = $this->getNewTaskid();
         $id = $id['taskid'];
-        $this->setOptionValue($id,"url",$url);
-        $this->setOptions($json,$id);
+
+        $this->setOptionValue($id, "url", $url);
+        $this->setOptions($json, $id);
+        //返回响应
+        /*        echo 'ok';
+                fastcgi_finish_request();*/
         $res['engineid'] = $this->startScan($id);
         $res['taskid'] = $id;
         $this->saveTask($id);
@@ -32,10 +36,11 @@ class Sql_model extends CI_Model
         return $res;
     }
 
-    private function setOptions($json,$id){
-        $json = json_decode($json,true);
-        foreach ($json as $key => $value){
-            $this->setOptionValue($id,$key,$value);
+    private function setOptions($json, $id)
+    {
+        $json = json_decode($json, true);
+        foreach ($json as $key => $value) {
+            $this->setOptionValue($id, $key, $value);
         };
     }
 
@@ -77,8 +82,9 @@ class Sql_model extends CI_Model
         $this->save($taskid);
     }
 
-    public function delTask($taskid){
-        $this->db->where('taskid',$taskid);
+    public function delTask($taskid)
+    {
+        $this->db->where('taskid', $taskid);
         $data = $this->db->delete('history');
         return $data;
     }
@@ -89,7 +95,7 @@ class Sql_model extends CI_Model
         $data['url'] = $this->getOptionValue($taskid, 'url');
         $res = $this->getscan($taskid);
         $data['isVulnerable'] = $res['isVulnerable'];
-        if($data['isVulnerable']==1){
+        if ($data['isVulnerable'] == 1) {
             $data['HttpMethod'] = $res['place'];
             $data['banner'] = "os:" . $res['os'] . ";dbms:" . $res['dbms'];
             $data['parameter'] = $res['parameter'];
@@ -145,17 +151,18 @@ class Sql_model extends CI_Model
     }
 
 
+    public function logToWeb($taskid)
+    {
 
-    public function logToWeb($taskid){
-
-        $query = $this->db->get_where('log',array('taskid'=>$taskid));
+        $query = $this->db->get_where('log', array('taskid' => $taskid));
         $result = $query->row_array();
         return $result;
 
     }
 
-    public function payloadsToWeb($taskid){
-        $query = $this->db->get_where('Jingubang',array('taskid'=>$taskid));
+    public function payloadsToWeb($taskid)
+    {
+        $query = $this->db->get_where('Jingubang', array('taskid' => $taskid));
         $result = $query->row_array();
         return $result;
     }

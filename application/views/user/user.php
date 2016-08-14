@@ -2,7 +2,7 @@
 <label>检测历史</label>
 <?php foreach($history as $tasks): ?>
     <?php foreach($tasks as $task): ?>
-        <div style="margin-left: 300px">
+        <div id="<?php echo $task['taskid'];?>" style="margin-left: 300px">
 id: <h3><?php echo $task['id'];?></h3>
         <div>
             <p>url:<?php echo $task['url'];?></p>
@@ -11,7 +11,7 @@ id: <h3><?php echo $task['id'];?></h3>
             <p>HttpMethod:<?php echo $task['HttpMethod'];?></p>
             <p>banner:<?php echo $task['banner'];?></p>
             <p>parameter:<?php echo $task['parameter'];?></p>
-            <a href="<?php echo site_url('/jingubang/delete/'.$task['taskid']);?>">删除此记录</a>
+            <a href="javascript:;" onclick="deleteRecord(`<?php echo $task['taskid']?>`)">删除此记录</a>
             <input type="button" onclick="getPayLoads(`<?php echo $task['taskid']?>`)" value="Payloads">
             <input type="button" onclick="getLog(`<?php echo $task['taskid']?>`)" value="详细日志">
             <br>

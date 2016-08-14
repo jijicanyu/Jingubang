@@ -1,5 +1,5 @@
 <br/>
-<a href="#" onclick="displayDiv('nav_wrap',1);displayDiv('options1',1);" style="font-size=14px; font-weight: bold;">附加选项</a>
+<a href="#nav_wrap" onclick="displayDiv('nav_wrap',1);displayDiv('options1',1);" style="font-size=14px; font-weight: bold;">附加选项</a>
 <div class="nav_wrap" id="nav_wrap" style="display: none">
     <ul class="nav nav-tabs nav-justified" role="tablist">
         <li class="active"><a href="#" onclick="showOptions(1);" style="font-size=14px; font-weight: bold;">Basic</a></li>
